@@ -3,9 +3,11 @@ console.log("service worker is working");
 const CACHE_NAME = "static-cache";
 const DATA_CACHE_NAME = "data-cache";
 
+// I attempt to add these files the first two are the issue. The index.html works alone but not with the
+// other files I don't know why but I guess I am part way there.
 const FILES_TO_CACHE = [
-    '/',
-    '/index.html',
+    // '/',
+    // '/index.html',
     '/style.css',
     '/index.js',
     '/manifest.webmanifest',
