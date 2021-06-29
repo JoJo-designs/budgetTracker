@@ -14,17 +14,24 @@ const FILES_TO_CACHE = [
     '/icons/icon-192x192.png'
 ];
 
-// install
-self.addEventListener("install", function(evt) {
-    console.log(evt);
-    evt.waitUntil(
-      caches.open(CACHE_NAME).then(cache => {
-        console.log("Your files were pre-cached successfully!");
-        return cache.addAll(FILES_TO_CACHE);
-      })
-    );
-  
-    self.skipWaiting();
-  });
-  
-  
+self.addEventListener('install', (event) => {
+    console.log(event);
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
+      );
+
+    // event.waitUntil(
+    //     caches.open('static-cache').then((cache) => {
+    //         return cache.add([
+    //             '/',
+    //             '/index.html',
+    //             '/style.css',
+    //             '/index.js',
+    //             '/manifest.webmanifest',
+    //             '/icons/icon-1.png',
+    //             '/icons/icon-2.png',
+    //             '/icons/icon-192x192.png'
+    //         ]);
+    //     })
+    // );
+});
