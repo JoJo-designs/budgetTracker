@@ -32,7 +32,7 @@ self.addEventListener('activate', (event) => {
             return Promise.all(
                 keyList.map(key => {
                     if (key !== CACHE_NAME && key !==DATA_CACHE_NAME) {
-                        console.log("Removeing old cache", key);
+                        console.log("Removing old cache", key);
                         return caches.delete(key);
                     }
                 })
@@ -44,3 +44,27 @@ self.addEventListener('activate', (event) => {
 });
 
 
+self.addEventListener("fetch", (event) => {
+    // cache successful requests to the API
+    if (event.request.url.includes("/api/")) {
+      event.respondWith(
+        caches.open(DATA_CACHE_NAME).then(cache => {
+          return fetch(event.request)
+            .then(response => {
+              // If the response was good, clone it and store it in the cache.
+              if (response.status === 200) {
+                cache.put(event.request.url, response.clone());
+              }
+  
+              return response;
+            })
+            .catch(err => {
+              // Network request failed, try to get it from the cache.
+              return cache.match(evt.request);
+            });
+        }).catch(err => console.log(err))
+      );
+  
+      return;
+    }
+})
