@@ -1,6 +1,7 @@
 let transactions = [];
 let myChart;
 
+// first call pulls in all the transactions in the database.
 fetch("/api/transaction")
   .then(response => {
     return response.json();
@@ -14,6 +15,7 @@ fetch("/api/transaction")
     populateChart();
   });
 
+  // does stuff with the date that has been returned
 function populateTotal() {
   // reduce transaction amounts to a single total value
   let total = transactions.reduce((total, t) => {
@@ -78,6 +80,7 @@ function populateChart() {
   });
 }
 
+// send data to the database
 function sendTransaction(isAdding) {
   let nameEl = document.querySelector("#t-name");
   let amountEl = document.querySelector("#t-amount");
