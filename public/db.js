@@ -1,15 +1,12 @@
-// This file will be what build the indexDb that we 
-// use off line I think.
+export function useIndexDb() {
+
+let db;
 
 const request = window.indexedDB.open("Transactions", 1);
 
-request.onupgradeneeded = ({ target }) => {
-    const db = target.result;
+request.onupgradeneeded = (event) => {
+    const db = request.results;
+    db.createObjectStore(storeName, { keyPath: "_id" });
+}
 
-    const budget = db.createObjectStore("budget", {
-        keyPath: "itemID"
-    });
-
-    budget.createIndex("name", "name");
-    budget.createIndex("value", "value");
 }
