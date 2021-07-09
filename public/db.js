@@ -1,41 +1,62 @@
-// okay I need to build an indexDb 
-// the indexDb is connected to the index.js on line 142 with a function 
-// called saveRecord.
+let db;
 
-// not sure which activity to look at to get info on checking if the 
-// app is online again.
+//create the indexBD database.
+const request = indexedDB.open('transactions', 1);
 
-export function saveRecord(transactions, budget, method, transaction) {
-    const request = window.indexedDB.open(transactions, 1);
-    let db,
-    item,
-    store;
+request.onupgradeneeded = (event) => {
+    db = event.target.result;
+    db.createObjectStore('budget', { autoIncrement: true });
+};
 
-    request.onupgradeneeded = (event) => {
-        const db = request.result;
-        db.createObjectStore(budget, {keyPath: "id"});
-    };
+request.onerror = (event) => {
+    console.log(`Looks like we ran into an issue ${event.target.errorCode}`);
+};
 
-    request.onerror = (event) => {
-        console.log("We ran into an error")
-    };
+function checkDataBase() {
+    console.log("checking the database");
+    let transactions = db.transaction(['budget'], 'readwrite');
+    const store = transactions.objectStore('budget');
+    const getItems = store.getAll();
 
-    request.onsuccess = (event) => {
-        db = request.result;
-        item = db.transaction(budget, "readwrite");
-        store = item.odjectStore(budget);
-
-        db.onerror = (event) => {
-            console.log("we ran into an error");
-        };
-        if (method === "put") {
-            store.put(transaction);
-        }
-        if (method === "get") {
-            store.getAll();
-        }
-        item.oncomplete = () => {
-            db.close();
+    getItems.onsuccess = () => {
+        if (getItems.result.length > 0) {
+            fetch('/api/transaction/bulk', {
+                method: 'POST',
+                body: JSON.stringify(getItems.result),
+                headers: {
+                    Accept: 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then((response) => response.json())
+                .then((res) => {
+                    if (res.length !== 0) {
+                        transactions = db.transaction(['budget'], 'readwrite');
+                        const currentValue = transactions.objectStore('budget');
+                        currentValue.clear();
+                        console.log('Storage Cleared');
+                    }
+                });
         }
     };
 }
+
+request.onsuccess = (event) => {
+    console.log('success');
+    db = event.target.result;
+
+    if (navigator.onLine) {
+        console.log("Online");
+        checkDataBase();
+    }
+}
+
+const saveRecord = (record) => {
+    console.log('saving new records');
+    console.log(record);
+    const transaction = db.transaction(['budget'], 'readwrite');
+    const store = transaction.objectStore('budget');
+    store.add(record);
+}
+
+window.addEventListener('online', checkDataBase);
