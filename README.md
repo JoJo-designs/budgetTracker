@@ -1,7 +1,7 @@
 # budgetTracker
 
 ### Description
-The budget tracker is a pwa that allows users to track their money even when they are not online. Users can add and subtract money and when they are off line the data will be saved and then updated when they connect again.
+The budget tracker is a PWA that allows users to track their money even when they are not online. Users can add and subtract money and when they are off line the data will be saved and then updated when they connect again.
 
 [live Version](https://superbudget.herokuapp.com/)
 [Git Hub repo](https://github.com/JoJo-designs/budgetTracker)
