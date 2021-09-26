@@ -8,7 +8,6 @@ The budget tracker is a PWA that allows users to track their money even when the
 [Git Hub repo](https://github.com/JoJo-designs/budgetTracker)
 
   ### Table of Content
-  [Installation](#Installation)
 
   [Usage](#Usage)
 
